@@ -14,4 +14,4 @@
 => installed jwt for tokens
 => job creation api working fine in backend
 => used cookie parser instead of res.header
-=> get one job by id
+=> get one job by id (get req)
