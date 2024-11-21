@@ -1,8 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const authRouter = require("./route/auth");
+const jobRouter = require("./route/job");
+const cookieParser = require("cookie-parser");
 const app = express();
+
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose
   .connect(
@@ -19,6 +23,7 @@ app.get("/health", async (req, res) => {
 });
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/job", jobRouter);
 
 app.listen(7000, (req, res) => {
   console.log("app is running on port 7000");
