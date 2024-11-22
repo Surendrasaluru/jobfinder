@@ -15,3 +15,7 @@
 => job creation api working fine in backend
 => used cookie parser instead of res.header
 => get one job by id (get req)
+
+# NOV22
+
+=> edit job api added and tested using postman.

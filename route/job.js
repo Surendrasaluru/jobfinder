@@ -63,4 +63,26 @@ jobRouter.get("/details/:jobId", async (req, res) => {
     res.json({ message: "no job found with given id" });
   }
 });
+
+jobRouter.patch("/edit/:jobId", verifyToken, async (req, res) => {
+  try {
+    const jobId = req.params.jobId; //extracting jobid
+    const jobDetails = await Job.findById(jobId); //finding that job in DB.
+    if (!jobDetails) {
+      return res.status(400).json({ message: "no job found with that id" }); //handling
+    }
+
+    Object.keys(req.body).forEach((key) => (jobDetails[key] = req.body[key]));
+
+    await jobDetails.save();
+    res.json({
+      message: "your  update was succesful",
+      data: jobDetails,
+    });
+  } catch (err) {
+    console.log(err.msg);
+    res.json({ message: "cant edit sorry" });
+  }
+});
+
 module.exports = jobRouter;
