@@ -4,6 +4,7 @@ const jobSchema = new mongoose.Schema(
     companyName: {
       type: String,
       required: [true, "Company name is required"],
+      uppercase: true,
     },
     addLogoURL: {
       type: String,
@@ -12,6 +13,7 @@ const jobSchema = new mongoose.Schema(
     jobPosition: {
       type: String,
       required: [true, "Job position is required"],
+      uppercase: true,
     },
     monthlySalary: {
       type: String,

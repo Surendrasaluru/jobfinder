@@ -11,7 +11,6 @@ jobRouter.post("/create", verifyToken, async (req, res) => {
       jobPosition,
       monthlySalary,
       jobType,
-
       jobLocation,
       jobDescription,
       aboutCompany,
@@ -85,4 +84,34 @@ jobRouter.patch("/edit/:jobId", verifyToken, async (req, res) => {
   }
 });
 
+jobRouter.get("/alljobs", async (req, res) => {
+  try {
+    const title = req.query.title || "";
+    const skills = req.query.skills;
+    const allJobs = await Job.find(
+      { jobPosition: { $regex: title.toUpperCase() } },
+      {
+        companyName: 1,
+        jobPosition: 1,
+        monthlySalary: 1,
+        jobType: 1,
+        jobLocation: 1,
+        addLogoURL: 1,
+      }
+    );
+    res.json(allJobs);
+  } catch (err) {
+    console.log(err.message);
+    res.json({ message: "internal error happened in catch" });
+  }
+});
+
 module.exports = jobRouter;
+
+/*companyName,
+      addLogoURL,
+      jobPosition,
+      monthlySalary,
+      jobType,
+      jobLocation,
+*/
