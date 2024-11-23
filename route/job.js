@@ -14,6 +14,7 @@ jobRouter.post("/create", verifyToken, async (req, res) => {
       jobLocation,
       jobDescription,
       aboutCompany,
+      skillsRequired,
     } = req.body;
     if (
       !companyName ||
@@ -21,7 +22,8 @@ jobRouter.post("/create", verifyToken, async (req, res) => {
       !jobDescription ||
       !aboutCompany ||
       !monthlySalary ||
-      !jobType
+      !jobType ||
+      !skillsRequired
     ) {
       return res
         .status(400)
@@ -33,6 +35,7 @@ jobRouter.post("/create", verifyToken, async (req, res) => {
       addLogoURL,
       jobPosition,
       monthlySalary,
+      skillsRequired,
       jobType,
       jobLocation,
       jobDescription,
@@ -87,19 +90,29 @@ jobRouter.patch("/edit/:jobId", verifyToken, async (req, res) => {
 jobRouter.get("/alljobs", async (req, res) => {
   try {
     const title = req.query.title || "";
-    const skills = req.query.skills;
-    const allJobs = await Job.find(
-      { jobPosition: { $regex: title.toUpperCase() } },
-      {
-        companyName: 1,
-        jobPosition: 1,
-        monthlySalary: 1,
-        jobType: 1,
-        jobLocation: 1,
-        addLogoURL: 1,
-      }
-    );
-    res.json(allJobs);
+    const skills = req.query.skills || "";
+
+    let filteredSkills;
+    let filter = {};
+    if (skills && skills.length > 0) {
+      filteredSkills = skills.split(",");
+      const caseInsensitiveFilteredSkills = filteredSkills.map(
+        (element) => new RegExp(element, "i")
+      );
+      filteredSkills = caseInsensitiveFilteredSkills;
+      filter = { skillsRequired: { $in: filteredSkills } };
+    }
+
+    const allJobs = await Job.find({
+      jobPosition: { $regex: title, $options: "i" },
+      ...filter,
+    });
+
+    if (allJobs.length === 0) {
+      await res.json({ message: "no jobs found with given criteria" });
+    } else {
+      await res.json(allJobs);
+    }
   } catch (err) {
     console.log(err.message);
     res.json({ message: "internal error happened in catch" });
