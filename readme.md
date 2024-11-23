@@ -19,3 +19,8 @@
 # NOV22
 
 => edit job api added and tested using postman.
+=> title filter added
+
+# NOV23
+
+=> skills filter added
